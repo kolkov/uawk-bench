@@ -1,0 +1,24 @@
+# Binaries (only in bin/)
+/bin/
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+
+# Claude Code temp files
+*-cwd
+
+# Test data and results (regenerated)
+testdata/
+results/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db

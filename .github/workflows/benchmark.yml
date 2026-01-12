@@ -1,0 +1,113 @@
+name: AWK Benchmark
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  schedule:
+    # Run weekly on Sunday at 00:00 UTC
+    - cron: '0 0 * * 0'
+  workflow_dispatch:
+    inputs:
+      size:
+        description: 'Dataset size'
+        required: true
+        default: '10MB'
+        type: choice
+        options:
+          - 1MB
+          - 10MB
+          - 100MB
+      uawk_version:
+        description: 'uawk version (latest or specific tag)'
+        required: false
+        default: 'latest'
+        type: string
+
+jobs:
+  benchmark:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.25'
+
+      - name: Install system AWKs
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y gawk mawk
+
+      - name: Install goawk
+        run: go install github.com/benhoyt/goawk@latest
+
+      - name: Install uawk
+        run: |
+          VERSION="${{ github.event.inputs.uawk_version || 'latest' }}"
+          if [ "$VERSION" = "latest" ]; then
+            go install github.com/kolkov/uawk/cmd/uawk@latest
+          else
+            go install github.com/kolkov/uawk/cmd/uawk@$VERSION
+          fi
+
+      - name: Build benchmark tool
+        run: go build -o bin/awkbench ./cmd/awkbench
+
+      - name: Verify installations
+        run: |
+          echo "## AWK Implementations" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| AWK | Version |" >> $GITHUB_STEP_SUMMARY
+          echo "|-----|---------|" >> $GITHUB_STEP_SUMMARY
+
+          if command -v uawk &> /dev/null; then
+            VER=$(uawk --version 2>&1 | head -1 || echo "unknown")
+            echo "| uawk | $VER |" >> $GITHUB_STEP_SUMMARY
+          fi
+          if command -v goawk &> /dev/null; then
+            VER=$(goawk --version 2>&1 | head -1 || echo "unknown")
+            echo "| goawk | $VER |" >> $GITHUB_STEP_SUMMARY
+          fi
+          if command -v gawk &> /dev/null; then
+            VER=$(gawk --version 2>&1 | head -1 || echo "unknown")
+            echo "| gawk | $VER |" >> $GITHUB_STEP_SUMMARY
+          fi
+          if command -v mawk &> /dev/null; then
+            VER=$(mawk -W version 2>&1 | head -1 || echo "unknown")
+            echo "| mawk | $VER |" >> $GITHUB_STEP_SUMMARY
+          fi
+          echo "" >> $GITHUB_STEP_SUMMARY
+
+      - name: Run benchmarks
+        run: |
+          SIZE="${{ github.event.inputs.size || '10MB' }}"
+          ./bin/awkbench -size "$SIZE" -runs 10 -output results
+
+          echo "## Benchmark Results ($SIZE, 10 runs, median)" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          cat results/results.md >> $GITHUB_STEP_SUMMARY
+
+      - name: System info
+        run: |
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "## System Info" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| Property | Value |" >> $GITHUB_STEP_SUMMARY
+          echo "|----------|-------|" >> $GITHUB_STEP_SUMMARY
+          echo "| OS | Ubuntu $(lsb_release -rs) |" >> $GITHUB_STEP_SUMMARY
+          echo "| CPU | $(grep 'model name' /proc/cpuinfo | head -1 | cut -d: -f2 | xargs) |" >> $GITHUB_STEP_SUMMARY
+          echo "| Cores | $(nproc) |" >> $GITHUB_STEP_SUMMARY
+          echo "| Go | $(go version | cut -d' ' -f3) |" >> $GITHUB_STEP_SUMMARY
+          echo "| Date | $(date -u +%Y-%m-%d) |" >> $GITHUB_STEP_SUMMARY
+
+      - name: Upload results
+        uses: actions/upload-artifact@v4
+        with:
+          name: benchmark-results-${{ github.run_id }}
+          path: results/
+          retention-days: 90

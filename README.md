@@ -6,38 +6,49 @@ Benchmark suite for comparing AWK implementations.
 
 **uawk wins 16/16 benchmarks** vs GoAWK on Linux (10MB dataset, 10 runs).
 
-[View CI Results](https://github.com/kolkov/uawk-bench/actions/runs/20934114950)
+[View CI Results](https://github.com/kolkov/uawk-bench/actions/runs/20935276345)
 
 ### Summary
 
 | vs | Wins | Notable |
 |----|------|---------|
-| GoAWK | **16/16** | alternation 29x, email 14x, inner 13x |
+| GoAWK | **16/16** | alternation 31x, email 14x, inner 14x |
 | gawk | **13/16** | loses on ipaddr, regex, version |
 | mawk | **10/16** | loses on anchored, charclass, inner, groupby, wordcount, suffix |
 
 ### Detailed Results (Linux CI)
 
-| Benchmark | uawk | goawk | gawk | mawk |
-|-----------|------|-------|------|------|
-| alternation | **25ms** | 723ms | 34ms | 28ms |
-| anchored | **17ms** | 22ms | 33ms | 8ms |
-| charclass | **19ms** | 43ms | 30ms | 10ms |
-| count | **39ms** | 65ms | 61ms | 43ms |
-| csv | **69ms** | 102ms | 117ms | 92ms |
-| email | **25ms** | 343ms | 49ms | 630ms |
-| filter | **96ms** | 112ms | 125ms | 98ms |
-| groupby | **196ms** | 277ms | 308ms | 146ms |
-| inner | **23ms** | 301ms | 40ms | 12ms |
-| ipaddr | 47ms | 138ms | **39ms** | 104ms |
-| regex | 78ms | 250ms | **44ms** | 513ms |
-| select | **77ms** | 97ms | 138ms | 73ms |
-| suffix | **24ms** | 51ms | 33ms | 22ms |
-| sum | **79ms** | 99ms | 118ms | 81ms |
-| version | 45ms | 130ms | **37ms** | 97ms |
-| wordcount | **212ms** | 241ms | 303ms | 165ms |
+| Benchmark | uawk | uawk-j4 | goawk | gawk | mawk |
+|-----------|------|---------|-------|------|------|
+| alternation | **23ms** | 17ms | 715ms | 33ms | 28ms |
+| anchored | **16ms** | 15ms | 21ms | 32ms | 7ms |
+| charclass | **18ms** | 15ms | 41ms | 29ms | 9ms |
+| count | **36ms** | 24ms | 61ms | 61ms | 42ms |
+| csv | **67ms** | 44ms | 96ms | 118ms | 90ms |
+| email | **24ms** | 23ms | 339ms | 49ms | 629ms |
+| filter | **86ms** | 53ms | 108ms | 114ms | 89ms |
+| groupby | **195ms** | 107ms | 269ms | 312ms | 145ms |
+| inner | **22ms** | 22ms | 299ms | 40ms | 12ms |
+| ipaddr | 45ms | 32ms | 136ms | **38ms** | 103ms |
+| regex | 76ms | 45ms | 247ms | **44ms** | 452ms |
+| select | **70ms** | 44ms | 92ms | 128ms | 66ms |
+| suffix | **24ms** | 20ms | 50ms | 32ms | 21ms |
+| sum | **77ms** | 49ms | 99ms | 117ms | 80ms |
+| version | 44ms | 30ms | 128ms | **37ms** | 96ms |
+| wordcount | **210ms** | 110ms | 236ms | 298ms | 166ms |
+
+### Parallel Mode Speedups (-j4)
+
+| Benchmark | Sequential | Parallel | Improvement |
+|-----------|------------|----------|-------------|
+| wordcount | 210ms | 110ms | **-48%** |
+| groupby | 195ms | 107ms | **-45%** |
+| filter | 86ms | 53ms | **-38%** |
+| regex | 76ms | 45ms | **-41%** |
 
 *Test environment: Ubuntu 24.04, GitHub Actions runner, Go 1.25.5*
+
+See [CHANGELOG.md](CHANGELOG.md) for version history.
 
 ## Supported AWKs
 

@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"math"
 	"sort"
 	"strings"
 	"time"
@@ -180,18 +181,5 @@ func formatDuration(d time.Duration) string {
 }
 
 func pow(x, y float64) float64 {
-	if y == 0 {
-		return 1
-	}
-	result := 1.0
-	for i := 0; i < int(y); i++ {
-		result *= x
-	}
-	// Handle fractional part using Newton's method
-	if y != float64(int(y)) {
-		// Approximation for fractional exponents
-		frac := y - float64(int(y))
-		result *= 1 + frac*(x-1) // Linear approximation
-	}
-	return result
+	return math.Pow(x, y)
 }

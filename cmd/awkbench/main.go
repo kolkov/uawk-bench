@@ -64,13 +64,23 @@ func run() error {
 	// Note: frawk skipped - Cranelift backend crashes, LLVM requires complex CI setup
 	numCPU := runtime.NumCPU()
 	allAWKs := []runner.AWK{
-		{Name: "uawk", Command: "uawk"},                                                          // POSIX mode (default)
-		{Name: "uawk-fast", Command: "uawk", Args: []string{"--no-posix"}},                       // Fast mode
-		{Name: "uawk-j4", Command: "uawk", Args: []string{"-j", "4"}},                            // Parallel 4 workers
-		{Name: fmt.Sprintf("uawk-j%d", numCPU), Command: "uawk", Args: []string{"-j", fmt.Sprintf("%d", numCPU)}}, // Parallel max workers
+		{Name: "uawk", Command: "uawk"},                                    // POSIX mode (default)
+		{Name: "uawk-fast", Command: "uawk", Args: []string{"--no-posix"}}, // Fast mode
 		{Name: "goawk", Command: "goawk"},
 		{Name: "gawk", Command: "gawk", Args: []string{"-b"}},
 		{Name: "mawk", Command: "mawk"},
+	}
+
+	// Add parallel modes if more than 1 CPU
+	if numCPU >= 2 {
+		allAWKs = append(allAWKs, runner.AWK{
+			Name: "uawk-j2", Command: "uawk", Args: []string{"-j", "2"},
+		})
+	}
+	if numCPU >= 4 {
+		allAWKs = append(allAWKs, runner.AWK{
+			Name: "uawk-j4", Command: "uawk", Args: []string{"-j", "4"},
+		})
 	}
 
 	var awks []runner.AWK

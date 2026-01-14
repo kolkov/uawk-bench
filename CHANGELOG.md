@@ -2,6 +2,44 @@
 
 All notable changes to the uawk benchmark suite will be documented in this file.
 
+## [2026-01-14] uawk v0.2.2
+
+### Benchmark Results (Linux CI, 10MB, 10 runs)
+
+| Benchmark | uawk | uawk-j4 | goawk | gawk | mawk |
+|-----------|------|---------|-------|------|------|
+| alternation | **23ms** | 17ms | 719ms | 33ms | 28ms |
+| anchored | **15ms** | 15ms | 21ms | 32ms | 7ms |
+| charclass | **17ms** | 16ms | 42ms | 29ms | 9ms |
+| count | **37ms** | 24ms | 61ms | 61ms | 43ms |
+| csv | **67ms** | 42ms | 96ms | 117ms | 90ms |
+| email | **23ms** | 22ms | 340ms | 48ms | 631ms |
+| filter | **83ms** | 48ms | 108ms | 117ms | 88ms |
+| groupby | **200ms** | 108ms | 269ms | 311ms | 145ms |
+| inner | **22ms** | 22ms | 298ms | 42ms | 12ms |
+| ipaddr | 46ms | 34ms | 136ms | **39ms** | 103ms |
+| regex | 80ms | 49ms | 248ms | **44ms** | 455ms |
+| select | **68ms** | 44ms | 92ms | 127ms | 66ms |
+| suffix | **23ms** | 21ms | 50ms | 32ms | 21ms |
+| sum | **74ms** | 46ms | 97ms | 118ms | 80ms |
+| version | 44ms | 33ms | 128ms | **37ms** | 96ms |
+| wordcount | **211ms** | 108ms | 236ms | 303ms | 165ms |
+
+### Summary
+
+| Comparison | Score | Notable |
+|------------|-------|---------|
+| uawk vs GoAWK | **16/16** | alternation 31x, email 15x, inner 14x |
+| uawk vs gawk | **13/16** | loses: ipaddr, regex, version |
+| uawk vs mawk | **10/16** | loses: anchored, charclass, inner, groupby, wordcount, suffix |
+
+### Changes in v0.2.2
+
+- **coregex v0.10.6**: Thread-safety fix, CompositeSequenceDFA (25x faster overlapping char classes)
+- Performance: within noise of v0.2.1 (no regressions)
+
+---
+
 ## [2026-01-12] uawk v0.2.1
 
 ### Benchmark Results (Linux CI, 10MB, 10 runs)

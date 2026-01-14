@@ -2,11 +2,11 @@
 
 Benchmark suite for comparing AWK implementations.
 
-## Latest Results (uawk v0.2.1)
+## Latest Results (uawk v0.2.2)
 
 **uawk wins 16/16 benchmarks** vs GoAWK on Linux (10MB dataset, 10 runs).
 
-[View CI Results](https://github.com/kolkov/uawk-bench/actions/runs/20935276345)
+[View CI Results](https://github.com/kolkov/uawk-bench/actions/runs/20991974572)
 
 ### Summary
 
@@ -20,31 +20,31 @@ Benchmark suite for comparing AWK implementations.
 
 | Benchmark | uawk | uawk-j4 | goawk | gawk | mawk |
 |-----------|------|---------|-------|------|------|
-| alternation | **23ms** | 17ms | 715ms | 33ms | 28ms |
-| anchored | **16ms** | 15ms | 21ms | 32ms | 7ms |
-| charclass | **18ms** | 15ms | 41ms | 29ms | 9ms |
-| count | **36ms** | 24ms | 61ms | 61ms | 42ms |
-| csv | **67ms** | 44ms | 96ms | 118ms | 90ms |
-| email | **24ms** | 23ms | 339ms | 49ms | 629ms |
-| filter | **86ms** | 53ms | 108ms | 114ms | 89ms |
-| groupby | **195ms** | 107ms | 269ms | 312ms | 145ms |
-| inner | **22ms** | 22ms | 299ms | 40ms | 12ms |
-| ipaddr | 45ms | 32ms | 136ms | **38ms** | 103ms |
-| regex | 76ms | 45ms | 247ms | **44ms** | 452ms |
-| select | **70ms** | 44ms | 92ms | 128ms | 66ms |
-| suffix | **24ms** | 20ms | 50ms | 32ms | 21ms |
-| sum | **77ms** | 49ms | 99ms | 117ms | 80ms |
-| version | 44ms | 30ms | 128ms | **37ms** | 96ms |
-| wordcount | **210ms** | 110ms | 236ms | 298ms | 166ms |
+| alternation | **23ms** | 17ms | 719ms | 33ms | 28ms |
+| anchored | **15ms** | 15ms | 21ms | 32ms | 7ms |
+| charclass | **17ms** | 16ms | 42ms | 29ms | 9ms |
+| count | **37ms** | 24ms | 61ms | 61ms | 43ms |
+| csv | **67ms** | 42ms | 96ms | 117ms | 90ms |
+| email | **23ms** | 22ms | 340ms | 48ms | 631ms |
+| filter | **83ms** | 48ms | 108ms | 117ms | 88ms |
+| groupby | **200ms** | 108ms | 269ms | 311ms | 145ms |
+| inner | **22ms** | 22ms | 298ms | 42ms | 12ms |
+| ipaddr | 46ms | 34ms | 136ms | **39ms** | 103ms |
+| regex | 80ms | 49ms | 248ms | **44ms** | 455ms |
+| select | **68ms** | 44ms | 92ms | 127ms | 66ms |
+| suffix | **23ms** | 21ms | 50ms | 32ms | 21ms |
+| sum | **74ms** | 46ms | 97ms | 118ms | 80ms |
+| version | 44ms | 33ms | 128ms | **37ms** | 96ms |
+| wordcount | **211ms** | 108ms | 236ms | 303ms | 165ms |
 
 ### Parallel Mode Speedups (-j4)
 
 | Benchmark | Sequential | Parallel | Improvement |
 |-----------|------------|----------|-------------|
-| wordcount | 210ms | 110ms | **-48%** |
-| groupby | 195ms | 107ms | **-45%** |
-| filter | 86ms | 53ms | **-38%** |
-| regex | 76ms | 45ms | **-41%** |
+| wordcount | 211ms | 108ms | **-49%** |
+| groupby | 200ms | 108ms | **-46%** |
+| filter | 83ms | 48ms | **-42%** |
+| regex | 80ms | 49ms | **-39%** |
 
 *Test environment: Ubuntu 24.04, GitHub Actions runner, Go 1.25.5*
 
